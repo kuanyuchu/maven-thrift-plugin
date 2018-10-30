@@ -38,7 +38,7 @@ public final class ThriftTestCompileMojo extends AbstractThriftMojo {
      * @parameter default-value="${basedir}/src/test/thrift"
      * @required
      */
-    private File thriftTestSourceRoot;
+    private List<File> thriftTestSourceRoots;
 
     /**
      * This is the directory into which the {@code .java} will be created.
@@ -51,8 +51,10 @@ public final class ThriftTestCompileMojo extends AbstractThriftMojo {
     @Override
     protected void attachFiles() {
         project.addTestCompileSourceRoot(outputDirectory.getAbsolutePath());
-        projectHelper.addTestResource(project, thriftTestSourceRoot.getAbsolutePath(),
-                ImmutableList.of("**/*.thrift"), ImmutableList.of());
+        for (File thriftTestSourceRoot : thriftTestSourceRoots) {
+            projectHelper.addTestResource(project, thriftTestSourceRoot.getAbsolutePath(),
+                    ImmutableList.of("**/*.thrift"), ImmutableList.of());
+        }
     }
 
     @Override
@@ -69,7 +71,7 @@ public final class ThriftTestCompileMojo extends AbstractThriftMojo {
     }
 
     @Override
-    protected File getThriftSourceRoot() {
-        return thriftTestSourceRoot;
+    protected List<File> getThriftSourceRoots() {
+        return thriftTestSourceRoots;
     }
 }

@@ -21,6 +21,7 @@ package org.apache.thrift.maven;
 
 import com.google.common.collect.ImmutableList;
 import org.apache.maven.artifact.Artifact;
+import org.sonatype.inject.Parameters;
 
 import java.io.File;
 import java.util.List;
@@ -42,10 +43,11 @@ public final class ThriftCompileMojo extends AbstractThriftMojo {
     /**
      * The source directories containing the sources to be compiled.
      *
-     * @parameter default-value="${basedir}/src/main/thrift"
+     * @parameter
      * @required
      */
-    private File thriftSourceRoot;
+    @Parameters
+    private List<File> thriftSourceRoots;
 
     /**
      * This is the directory into which the {@code .java} will be created.
@@ -53,6 +55,7 @@ public final class ThriftCompileMojo extends AbstractThriftMojo {
      * @parameter default-value="${project.build.directory}/generated-sources/thrift"
      * @required
      */
+    @Parameters
     private File outputDirectory;
 
     @Override
@@ -69,14 +72,16 @@ public final class ThriftCompileMojo extends AbstractThriftMojo {
     }
 
     @Override
-    protected File getThriftSourceRoot() {
-        return thriftSourceRoot;
+    protected List<File> getThriftSourceRoots() {
+        return thriftSourceRoots;
     }
 
     @Override
     protected void attachFiles() {
         project.addCompileSourceRoot(outputDirectory.getAbsolutePath());
-        projectHelper.addResource(project, thriftSourceRoot.getAbsolutePath(),
-                ImmutableList.of("**/*.thrift"), ImmutableList.of());
+        for (File thriftSourceRoot : thriftSourceRoots) {
+            projectHelper.addResource(project, thriftSourceRoot.getAbsolutePath(),
+                    ImmutableList.of("**/*.thrift"), ImmutableList.of());
+        }
     }
 }
