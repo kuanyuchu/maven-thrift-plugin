@@ -6,6 +6,20 @@ This is used to let thrift can include files inside other jars (or zipped resour
 We usually combined with maven-dependency-plugin to unpack the thrift from other files first.
 Here is the example:
 
+            <!-- clean up __THRIFT_FROM_JAR__ folder in case there is old snapshot there -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${basedir}/__THRIFT_FROM_JAR__</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
             <!-- unpack thrift definition file inside datavisor jar, so that platform can include them -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -22,7 +36,7 @@ Here is the example:
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>GROUP_ID</groupId>
-                                    <artifactId>ARTIFACT_IDartifactId>
+                                    <artifactId>ARTIFACT_ID</artifactId>
                                     <version>VERSION</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
